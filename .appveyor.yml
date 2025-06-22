@@ -154,7 +154,7 @@ before_build:
   - set Freenect_LIBRARY=%FREENECT_ROOT%\lib\freenect.lib
   - set Freenect_sync_LIBRARY=%FREENECT_ROOT%\lib\freenect_sync.lib
   - set LIBUSB_ROOT=C:\Program Files\libusb
-  - set LIBUSB_LIB=%LIBUSB_ROOT%\lib\libusb-1.0.lib
+  - set LIBUSB_LIB="C:\Program Files\libusb\lib\libusb-1.0.lib"
   - cd c:\projects\rtabmap\build
   - cmake -G "Visual Studio 14 2015 Win64" ^
       -DOpenCV_DIR="C:\Program Files\opencv\build" ^
