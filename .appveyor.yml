@@ -128,14 +128,40 @@ install:
   - ps: Expand-Archive freenect.zip -DestinationPath "C:\Program Files\libfreenect"
   - set FREENECT_ROOT=C:\Program Files\libfreenect
   - set PATH=%PATH%;%FREENECT_ROOT%\bin
+  - ECHO "Verifying libfreenect files..."
+  - ps: |
+      if (!(Test-Path "C:\Program Files\libfreenect\include\libfreenect\freenect.h")) { throw "Missing freenect.h" }
+      if (!(Test-Path "C:\Program Files\libfreenect\lib\freenect.lib")) { throw "Missing freenect.lib" }
+      if (!(Test-Path "C:\Program Files\libfreenect\lib\freenect_sync.lib")) { throw "Missing freenect_sync.lib" }
+  - ECHO "libfreenect files found successfully!"
+
+
 
 before_build:
+  - set FREENECT_ROOT=C:\Program Files\libfreenect
+  - set PATH=%PATH%;%FREENECT_ROOT%\bin
+  - set Freenect_INCLUDE_DIRS=%FREENECT_ROOT%\include\libfreenect
+  - set Freenect_LIBRARY=%FREENECT_ROOT%\lib\freenect.lib
+  - set Freenect_sync_LIBRARY=%FREENECT_ROOT%\lib\freenect_sync.lib
   - cd c:\projects\rtabmap\build
-  - cmake -G "Visual Studio 14 2015 Win64" -DOpenCV_DIR="C:\Program Files\opencv\build" -DPCL_DIR="C:\Program Files\PCL\cmake" -DCPUTSDF_DIR="C:\Program Files\cpu_tsdf\share\cpu_tsdf" -Dyaml-cpp_DIR="C:\Program Files\yaml-cpp\CMake" -DWITH_FREENECT=ON -DFREENECT_INCLUDE_DIR="%FREENECT_ROOT%\include\libfreenect" -DFREENECT_LIBRARY="%FREENECT_ROOT%\lib\freenect.lib" -DBUILD_AS_BUNDLE=ON ..
+  - cmake -G "Visual Studio 14 2015 Win64" ^
+      -DOpenCV_DIR="C:\Program Files\opencv\build" ^
+      -DPCL_DIR="C:\Program Files\PCL\cmake" ^
+      -DCPUTSDF_DIR="C:\Program Files\cpu_tsdf\share\cpu_tsdf" ^
+      -Dyaml-cpp_DIR="C:\Program Files\yaml-cpp\CMake" ^
+      -DWITH_FREENECT=ON ^
+      -DFREENECT_INCLUDE_DIR="%FREENECT_ROOT%\include\libfreenect" ^
+      -DFREENECT_LIBRARY="%FREENECT_ROOT%\lib\freenect.lib" ^
+      -DFreenect_INCLUDE_DIRS="%FREENECT_ROOT%\include\libfreenect" ^
+      -DFreenect_LIBRARY="%FREENECT_ROOT%\lib\freenect.lib" ^
+      -DFreenect_sync_LIBRARY="%FREENECT_ROOT%\lib\freenect_sync.lib" ^
+      -DBUILD_AS_BUNDLE=ON ..
 
 after_build :
   - cmake --build . --config Release --target package
   - cmd: findstr /i "FREENECT" C:\projects\rtabmap\build\CMakeCache.txt || echo freenect=NOT FOUND
+  - type CMakeCache.txt | findstr /i "freenect"
+
 
 artifacts:
   - path: build\RTABMap-*
