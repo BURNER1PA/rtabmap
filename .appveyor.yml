@@ -141,7 +141,8 @@ after_build :
   - cmake --build . --config Release --target package
 
 artifacts:
-  - path: build\RTABMap-*
+  - path: build\RTABMap-*-win64.exe
+    name: RTAB-Map-Installer
   
 notifications:
   - provider: Email
