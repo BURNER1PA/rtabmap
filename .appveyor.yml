@@ -143,6 +143,8 @@ after_build :
 artifacts:
   - path: build\RTABMap-*-win64.exe
     name: RTAB-Map-Installer
+
+Fix: Properly expose RTAB-Map installer as build artifact
   
 notifications:
   - provider: Email
