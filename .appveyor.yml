@@ -124,7 +124,7 @@ install:
   - set PATH=%PATH%;C:\Program Files\Azure Kinect SDK v1.4.1\tools
   - set K4A_ROOT_DIR=C:\Program Files\Azure Kinect SDK v1.4.1
   # libfreenect v1
-  - ps: wget 'https://www.dropbox.com/scl/fi/xajuefcr77bsk9xjzswf1/libfreenect.zip?rlkey=8h1k4xf0kqgcez5wovo3p1jut&st=x7acwh38&dl=1' -outfile freenect.zip
+  - ps: wget 'https://www.dropbox.com/scl/fi/pkplcb2p5b7b9cphzw5xt/libfreenect.zip?rlkey=hh71xq0a9mzt45onpt8loa53k&st=d7mpmkic&dl=1' -outfile freenect.zip
   - ps: Expand-Archive freenect.zip -DestinationPath "C:\Program Files\libfreenect"
   - set FREENECT_ROOT=C:\Program Files\libfreenect
   - set PATH=%PATH%;%FREENECT_ROOT%\bin
