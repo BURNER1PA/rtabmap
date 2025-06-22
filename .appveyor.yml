@@ -134,6 +134,16 @@ install:
       if (!(Test-Path "C:\Program Files\libfreenect\lib\freenect.lib")) { throw "Missing freenect.lib" }
       if (!(Test-Path "C:\Program Files\libfreenect\lib\freenect_sync.lib")) { throw "Missing freenect_sync.lib" }
   - ECHO "libfreenect files found successfully!"
+  # libusb (static version for freenect)
+  - ps: wget 'https://www.dropbox.com/scl/fi/ltoaya2d93ob1dj7ka47d/libusb.zip?rlkey=kt1v3x2jl74ftbc5xogxll4ry&st=k3u9z5a4&dl=1' -outfile libusb.zip
+  - ps: Expand-Archive libusb.zip -DestinationPath "C:\Program Files\libusb"
+  - set LIBUSB_ROOT=C:\Program Files\libusb
+  - set PATH=%PATH%;%LIBUSB_ROOT%\bin
+  - ECHO "Verifying libusb files..."
+  - ps: |
+      if (!(Test-Path "$env:LIBUSB_ROOT\include\libusb-1.0\libusb.h")) { throw "Missing libusb.h" }
+      if (!(Test-Path "$env:LIBUSB_ROOT\lib\libusb-1.0.lib")) { throw "Missing libusb-1.0.lib" }
+  - ECHO "libusb files found successfully!"
 
 
 
@@ -155,6 +165,8 @@ before_build:
       -DFreenect_INCLUDE_DIRS="%FREENECT_ROOT%\include\libfreenect" ^
       -DFreenect_LIBRARY="%FREENECT_ROOT%\lib\freenect.lib" ^
       -DFreenect_sync_LIBRARY="%FREENECT_ROOT%\lib\freenect_sync.lib" ^
+      -DLIBUSB_1_INCLUDE_DIR="%LIBUSB_ROOT%\include\libusb-1.0" ^
+      -DLIBUSB_1_LIBRARY="%LIBUSB_ROOT%\lib\libusb-1.0.lib" ^
       -DBUILD_AS_BUNDLE=ON ..
 
 after_build :
