@@ -110,13 +110,21 @@ install:
   - set PATH=%PATH%;C:\Program Files\Azure Kinect SDK v1.4.1\tools
   - set K4A_ROOT_DIR=C:\Program Files\Azure Kinect SDK v1.4.1
 
-  # Freenect v1
-  - appveyor DownloadFile https://github.com/OpenKinect/libfreenect/releases/download/v0.6.0/libfreenect-Windows-msvc.zip
-  - 7z x libfreenect-Windows-msvc.zip -oC:\Libraries\libfreenect
+# Example: Download and extract custom libfreenect
+- ps: wget 'https://www.dropbox.com/scl/fi/oc8vrt9dxo85nixnq3owv/libfreenect.zip?rlkey=4p0hbl4tlkbi26rrc8b6s29p7&st=140p8mul&dl=1' -outfile libfreenect.zip
+- ps: Expand-Archive -Path libfreenect.zip -DestinationPath 'C:\Program Files\libfreenect'
+- set PATH=%PATH%;C:\Program Files\libfreenect\bin
+
+
 
 before_build:
   - cd c:\projects\rtabmap\build
   - cmake -G "Visual Studio 14 2015 Win64" ^
+      -DFREENECT_INCLUDE_DIR="C:/Program Files/libfreenect/include/libfreenect" ^
+      -DFREENECT_LIBRARY="C:/Program Files/libfreenect/lib/freenect.lib" ^
+      -DWITH_FREENECT=ON ^
+      -DOpenCV_DIR="C:\Program Files\opencv\build" ^
+      -DPCL_DIR="C:\Program Files\PCL\cmake" ^
       -DBUILD_AS_BUNDLE=ON ^
       -DWITH_FREENECT=ON ^
       -DFREENECT_INCLUDE_DIR="C:/Libraries/libfreenect/include/libfreenect" ^
