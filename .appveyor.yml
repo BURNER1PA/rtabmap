@@ -135,7 +135,7 @@ install:
       if (!(Test-Path "C:\Program Files\libfreenect\lib\freenect_sync.lib")) { throw "Missing freenect_sync.lib" }
   - ECHO "libfreenect files found successfully!"
   # libusb (static version for freenect)
-  - ps: wget 'https://www.dropbox.com/scl/fi/ltoaya2d93ob1dj7ka47d/libusb.zip?rlkey=kt1v3x2jl74ftbc5xogxll4ry&st=k3u9z5a4&dl=1' -outfile libusb.zip
+  - ps: wget 'https://www.dropbox.com/scl/fi/92q8dpmgrd69135upikrl/libusb.zip?rlkey=2uzve0djp9euy0jhjvqwzi78h&st=8d0bwr8v&dl=1' -outfile libusb.zip
   - ps: Expand-Archive libusb.zip -DestinationPath "C:\Program Files\libusb"
   - set LIBUSB_ROOT=C:\Program Files\libusb
   - set PATH=%PATH%;%LIBUSB_ROOT%\bin
@@ -153,6 +153,8 @@ before_build:
   - set Freenect_INCLUDE_DIRS=%FREENECT_ROOT%\include\libfreenect
   - set Freenect_LIBRARY=%FREENECT_ROOT%\lib\freenect.lib
   - set Freenect_sync_LIBRARY=%FREENECT_ROOT%\lib\freenect_sync.lib
+  - set LIBUSB_ROOT=C:\Program Files\libusb
+  - set LIBUSB_LIB=%LIBUSB_ROOT%\lib\libusb-1.0.lib
   - cd c:\projects\rtabmap\build
   - cmake -G "Visual Studio 14 2015 Win64" ^
       -DOpenCV_DIR="C:\Program Files\opencv\build" ^
@@ -167,6 +169,7 @@ before_build:
       -DFreenect_sync_LIBRARY="%FREENECT_ROOT%\lib\freenect_sync.lib" ^
       -DLIBUSB_1_INCLUDE_DIR="%LIBUSB_ROOT%\include\libusb-1.0" ^
       -DLIBUSB_1_LIBRARY="%LIBUSB_ROOT%\lib\libusb-1.0.lib" ^
+      -DCMAKE_EXE_LINKER_FLAGS="/NODEFAULTLIB:msvcrt.lib %LIBUSB_LIB%" ^
       -DBUILD_AS_BUNDLE=ON ..
 
 after_build :
