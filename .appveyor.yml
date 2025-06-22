@@ -46,7 +46,7 @@ install:
   # OMITTED FOR BREVITY: Retain same commands as your original config for all these
 
   # Custom libfreenect install
-  - ps: wget 'https://www.dropbox.com/s/your_freenect_zip/libfreenect_custom.zip?dl=1' -outfile libfreenect_custom.zip
+  - ps: wget 'https://www.dropbox.com/scl/fi/oc8vrt9dxo85nixnq3owv/libfreenect.zip?rlkey=4p0hbl4tlkbi26rrc8b6s29p7&st=m6gdgmcn&dl=1' -outfile libfreenect_custom.zip
   - ps: Expand-Archive libfreenect_custom.zip -DestinationPath 'C:\Program Files\libfreenect'
   - set PATH=%PATH%;C:\Program Files\libfreenect\bin
 
