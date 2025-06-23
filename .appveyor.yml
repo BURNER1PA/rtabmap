@@ -136,6 +136,9 @@ install:
   - ECHO "Installed libfreenect:"  
   - ps: "ls \"C:/Program Files/libfreenect\""  
   - set PATH=%PATH%;C:\Program Files\libfreenect\bin
+  - set CMAKE_PREFIX_PATH=C:\Program Files\libfreenect;%CMAKE_PREFIX_PATH%  
+  - set LIBUSB_1_LIBRARY=C:\Program Files\libfreenect\lib\libusb-1.0.lib  
+  - set LIBUSB_1_INCLUDE_DIR=C:\Program Files\libfreenect\include
   
 before_build:
   - cd c:\projects\rtabmap\build
