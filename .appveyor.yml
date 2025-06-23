@@ -113,8 +113,9 @@ install:
   # libfreenect + libusb prebuilt from GitHub
   - ps: |
     Invoke-WebRequest -Uri "https://github.com/BURNER1PA/rtabmap/raw/master/external/freenect-prebuilt/freenect-prebuilt.zip" -OutFile freenect.zip
-    Expand-Archive freenect.zip -DestinationPath "C:\Program Files\libfreenect"
-    Rename-Item "C:\Program Files\libfreenect\freenect-prebuilt" "C:\Program Files\libfreenect\extracted"
+    Expand-Archive freenect.zip -DestinationPath "C:\Program Files"
+    Rename-Item "C:\Program Files\freenect-prebuilt" -NewName "libfreenect"
+  # Rename-Item "C:\Program Files\libfreenect\freenect-prebuilt" "C:\Program Files\libfreenect\extracted"
 
     # Point to correct root
     $env:FREENECT_ROOT = "C:\Program Files\libfreenect\extracted"
