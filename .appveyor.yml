@@ -111,15 +111,19 @@ install:
   - set K4A_ROOT_DIR=C:\Program Files\Azure Kinect SDK v1.4.1
 
   # libfreenect + libusb prebuilt from GitHub
-  - ps: Invoke-WebRequest -Uri "https://github.com/BURNER1PA/rtabmap/raw/master/external/freenect-prebuilt/freenect-prebuilt.zip" -OutFile freenect.zip
-  - ps: Expand-Archive freenect.zip -DestinationPath "C:\Program Files\libfreenect"
-  - set FREENECT_ROOT=C:\Program Files\libfreenect
-  - set PATH=%PATH%;%FREENECT_ROOT%\bin
   - ps: |
-      if (!(Test-Path "$env:FREENECT_ROOT\include\freenect.h")) { throw "Missing freenect.h" }
-      if (!(Test-Path "$env:FREENECT_ROOT\lib\freenect.lib")) { throw "Missing freenect.lib" }
-      if (!(Test-Path "$env:FREENECT_ROOT\lib\freenect_sync.lib")) { throw "Missing freenect_sync.lib" }
-      if (!(Test-Path "$env:FREENECT_ROOT\lib\libusb-1.0.lib")) { throw "Missing libusb-1.0.lib" }
+    Invoke-WebRequest -Uri "https://github.com/BURNER1PA/rtabmap/raw/master/external/freenect-prebuilt/freenect-prebuilt.zip" -OutFile freenect.zip
+    Expand-Archive freenect.zip -DestinationPath "C:\Program Files\libfreenect"
+    Rename-Item "C:\Program Files\libfreenect\freenect-prebuilt" "C:\Program Files\libfreenect\extracted"
+
+    # Point to correct root
+    $env:FREENECT_ROOT = "C:\Program Files\libfreenect\extracted"
+    $env:PATH += ";$env:FREENECT_ROOT\bin"
+
+    if (!(Test-Path "$env:FREENECT_ROOT\include\freenect.h")) { throw "Missing freenect.h" }
+    if (!(Test-Path "$env:FREENECT_ROOT\lib\freenect.lib")) { throw "Missing freenect.lib" }
+    if (!(Test-Path "$env:FREENECT_ROOT\lib\freenect_sync.lib")) { throw "Missing freenect_sync.lib" }
+    if (!(Test-Path "$env:FREENECT_ROOT\lib\libusb-1.0.lib")) { throw "Missing libusb-1.0.lib" }
 
 before_build:
   - set FREENECT_ROOT=C:\Program Files\libfreenect
