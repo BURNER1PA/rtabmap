@@ -156,6 +156,11 @@ before_build:
   - set LIBUSB_ROOT=C:\Program Files\libusb
   - set LIBUSB_LIB=C:\Program Files\libusb\lib\libusb-1.0.lib
   - cd c:\projects\rtabmap\build
+  - echo Removing invalid GCC flags from environment and cache...
+  - set CXXFLAGS=
+  - set CFLAGS=
+  - del CMakeCache.txt 2>NUL
+
   - cmake -G "Visual Studio 14 2015 Win64" ^
       -DOpenCV_DIR="C:\Program Files\opencv\build" ^
       -DPCL_DIR="C:\Program Files\PCL\cmake" ^
