@@ -130,6 +130,12 @@ install:
   - ps: "ls \"C:/Program Files/Azure Kinect SDK v1.4.1\""
   - set PATH=%PATH%;C:\Program Files\Azure Kinect SDK v1.4.1\tools
   - set K4A_ROOT_DIR=C:\Program Files\Azure Kinect SDK v1.4.1
+  # libfreenect with libusb from your GitHub fork  
+  - ps: wget 'https://github.com/BURNER1PA/rtabmap/raw/refs/heads/master/external/freenect-prebuilt/freenect-prebuilt.zip' -outfile freenect.zip  
+  - ps: Expand-Archive freenect.zip -DestinationPath 'C:\Program Files'  
+  - ECHO "Installed libfreenect:"  
+  - ps: "ls \"C:/Program Files/libfreenect\""  
+  - set PATH=%PATH%;C:\Program Files\libfreenect\bin
   
 before_build:
   - cd c:\projects\rtabmap\build
