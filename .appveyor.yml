@@ -160,8 +160,11 @@ before_build:
   - set CXXFLAGS=
   - set CFLAGS=
   - del CMakeCache.txt 2>NUL
-
+  - set CMAKE_CXX_FLAGS_RELEASE=/O2 /Ob2 /DNDEBUG
+  - cd c:\projects\rtabmap\build
+  
   - cmake -G "Visual Studio 14 2015 Win64" ^
+      -DCMAKE_CXX_FLAGS_RELEASE="/O2 /Ob2 /DNDEBUG" ^
       -DOpenCV_DIR="C:\Program Files\opencv\build" ^
       -DPCL_DIR="C:\Program Files\PCL\cmake" ^
       -DCPUTSDF_DIR="C:\Program Files\cpu_tsdf\share\cpu_tsdf" ^
