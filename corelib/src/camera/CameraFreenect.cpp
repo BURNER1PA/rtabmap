@@ -83,6 +83,12 @@ class FreenectDevice : public UThread {
 		}
 		freenect_free_device_attributes(attr_list);
 
+		UINFO("FreenectDevice: Found %d device(s)", (int)deviceSerials.size());
+		for(size_t i=0; i<deviceSerials.size(); ++i)
+{
+	UINFO("  Device %d Serial: %s", (int)i, deviceSerials[i].c_str());
+}
+
 		if(freenect_open_device(ctx_, &device_, index_) < 0)
 		{
 			UERROR("FreenectDevice: Cannot open Kinect");
@@ -90,13 +96,14 @@ class FreenectDevice : public UThread {
 		}
 
 		if(index_ >= 0 && index_ < (int)deviceSerials.size())
-		{
-			serial_ = deviceSerials[index_];
-		}
-		else
-		{
-			UERROR("Could not get serial for index %d", index_);
-		}
+{
+	serial_ = deviceSerials[index_];
+	UINFO("FreenectDevice: Using device index %d with serial %s", index_, serial_.c_str());
+}
+else
+{
+	UERROR("FreenectDevice: Could not get serial for index %d (only %d devices found)", index_, (int)deviceSerials.size());
+}
 
 		UINFO("color=%d registered=%d", color_?1:0, registered_?1:0);
 
@@ -299,6 +306,7 @@ CameraFreenect::CameraFreenect(int deviceId, Type type, float imageRate, const T
 		ctx_(0),
 		freenectDevice_(0)
 #endif
+
 {
 #ifdef RTABMAP_FREENECT
 	if(freenect_init(&ctx_, NULL) < 0) UERROR("Cannot initialize freenect library");
@@ -378,6 +386,9 @@ bool CameraFreenect::init(const std::string & calibrationFolder, const std::stri
 			}
 		}
 
+		UINFO("CameraFreenect::init() - Requesting deviceId = %d", deviceId_);
+
+		
 		freenectDevice_ = new FreenectDevice(ctx_, deviceId_, type_==kTypeColorDepth, hardwareRegistration);
 		if(freenectDevice_->init())
 		{
