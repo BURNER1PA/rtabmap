@@ -151,7 +151,9 @@ install:
       Test-Path "C:/Program Files/libfreenect/lib/freenect.lib"  
       Test-Path "C:/Program Files/libfreenect/lib/libusb-1.0.lib"  
   - set PATH=%PATH%;C:\Program Files\libfreenect\bin  
-  
+
+   -DWITH_FREENECT2=OFF
+   
 before_build:  
   - cd c:\projects\rtabmap\build  
   - cmake -G "Visual Studio 14 2015 Win64" -DOpenCV_DIR="C:\Program Files\opencv\build" -DPCL_DIR="C:\Program Files\PCL\cmake" -DCPUTSDF_DIR="C:\Program Files\cpu_tsdf\share\cpu_tsdf" -Dyaml-cpp_DIR="C:\Program Files\yaml-cpp\CMake" -DFreenect_LIBRARIES="C:\Program Files\libfreenect\lib\freenect.lib;C:\Program Files\libfreenect\lib\libusb-1.0.lib" -DFreenect_INCLUDE_DIRS="C:\Program Files\libfreenect\include" -DCMAKE_EXE_LINKER_FLAGS="/LTCG" -DCMAKE_SHARED_LINKER_FLAGS="/LTCG" -DBUILD_AS_BUNDLE=ON ..  
