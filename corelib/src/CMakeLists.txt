@@ -834,7 +834,17 @@ add_definitions(${PCL_DEFINITIONS})
 # Add binary that is built from the source file "main.cpp".  
 # The extension is automatically found.  
 ADD_LIBRARY(rtabmap_core ${SRC_FILES} ${RESOURCES_HEADERS}) [1](#56-0)   
-ADD_LIBRARY(rtabmap::core ALIAS rtabmap_core) [1](#56-0)   
+ADD_LIBRARY(rtabmap::core ALIAS rtabmap_core) [1](#56-0)
+
+# Define libusb as an IMPORTED static library    
+    add_library(libusb_imported STATIC IMPORTED)    
+    set_target_properties(libusb_imported PROPERTIES    
+        IMPORTED_LOCATION "C:/Program Files/libfreenect/lib/libusb-1.0.lib"    
+        INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/libfreenect/include"    
+    )    
+    
+    # Link libusb_imported to rtabmap_core    
+    target_link_libraries(rtabmap_core PRIVATE libusb_imported)
   
 generate_export_header(rtabmap_core  
  DEPRECATED_MACRO_NAME RTABMAP_DEPRECATED)  
@@ -862,16 +872,8 @@ IF(Freenect_FOUND) [2](#56-1)
 	SET(LIBRARIES  
 		${LIBRARIES}  
 		${Freenect_LIBRARIES}  
-	) [3](#56-2)   
-    # Define libusb as an IMPORTED static library    
-    add_library(libusb_imported STATIC IMPORTED)    
-    set_target_properties(libusb_imported PROPERTIES    
-        IMPORTED_LOCATION "C:/Program Files/libfreenect/lib/libusb-1.0.lib"    
-        INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/libfreenect/include"    
-    )    
-    
-    # Link libusb_imported to rtabmap_core    
-    target_link_libraries(rtabmap_core PRIVATE libusb_imported)    
+	)   
+        
 ENDIF(Freenect_FOUND)  
     
 SET_TARGET_PROPERTIES(  
