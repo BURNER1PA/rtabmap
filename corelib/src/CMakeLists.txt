@@ -247,21 +247,6 @@ IF(WITH_PYTHON AND Python3_FOUND)
 	)
 ENDIF(WITH_PYTHON AND Python3_FOUND)
 
-
-IF(Freenect_FOUND)
-	IF(Freenect_DASH_INCLUDES)
-	   ADD_DEFINITIONS("-DFREENECT_DASH_INCLUDES")
-	ENDIF(Freenect_DASH_INCLUDES)
-	SET(INCLUDE_DIRS
-		${INCLUDE_DIRS}
-		${Freenect_INCLUDE_DIRS}
-	)
-	SET(LIBRARIES
-		${LIBRARIES}
-		${Freenect_LIBRARIES}
-	)
-ENDIF(Freenect_FOUND)
-
 IF(OpenNI2_FOUND)
 	SET(INCLUDE_DIRS
 		${INCLUDE_DIRS}
@@ -846,65 +831,89 @@ ADD_CUSTOM_COMMAND(
 
 add_definitions(${PCL_DEFINITIONS})
 
-# Add binary that is built from the source file "main.cpp".
-# The extension is automatically found.
-ADD_LIBRARY(rtabmap_core ${SRC_FILES} ${RESOURCES_HEADERS})
-ADD_LIBRARY(rtabmap::core ALIAS rtabmap_core)
-
-generate_export_header(rtabmap_core
- DEPRECATED_MACRO_NAME RTABMAP_DEPRECATED)
-
-target_include_directories(rtabmap_core PUBLIC 
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include;${CMAKE_CURRENT_BINARY_DIR}/include;${PUBLIC_INCLUDE_DIRS};${INCLUDE_DIRS}>"
-  "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR};${PUBLIC_INCLUDE_DIRS}>")
+# Add binary that is built from the source file "main.cpp".  
+# The extension is automatically found.  
+ADD_LIBRARY(rtabmap_core ${SRC_FILES} ${RESOURCES_HEADERS}) [1](#56-0)   
+ADD_LIBRARY(rtabmap::core ALIAS rtabmap_core) [1](#56-0)   
   
-TARGET_LINK_LIBRARIES(rtabmap_core 
-  PUBLIC 
-    rtabmap_utilite 
-    ${PUBLIC_LIBRARIES}
-  PRIVATE 
-    ${LIBRARIES})
-
-SET_TARGET_PROPERTIES(
-     rtabmap_core
-   PROPERTIES
-     VERSION ${RTABMAP_VERSION}
-     SOVERSION ${RTABMAP_MAJOR_VERSION}.${RTABMAP_MINOR_VERSION}
-     EXPORT_NAME "core"
-)
-
-INSTALL(TARGETS rtabmap_core EXPORT rtabmap_coreTargets
-        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT runtime
-        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT devel
-        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT devel)
-        
-configure_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/rtabmap_core_export.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_PREFIX}/core/rtabmap_core_export.h
-  COPYONLY)
+generate_export_header(rtabmap_core  
+ DEPRECATED_MACRO_NAME RTABMAP_DEPRECATED)  
   
-install(
-  DIRECTORY
-    ${CMAKE_CURRENT_SOURCE_DIR}/../include/${PROJECT_PREFIX}
-    ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_PREFIX}
-  DESTINATION
-    ${INSTALL_INCLUDE_DIR}
-  COMPONENT
-    devel
-  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
-)
-
-export(EXPORT rtabmap_coreTargets
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/../../${PROJECT_NAME}_coreTargets.cmake"
-  NAMESPACE rtabmap::
-)
-
-install(EXPORT rtabmap_coreTargets
-  FILE
-    ${PROJECT_NAME}_coreTargets.cmake
-  DESTINATION
-    ${INSTALL_CMAKE_DIR}
-  NAMESPACE rtabmap::
-  COMPONENT
-    devel
+target_include_directories(rtabmap_core PUBLIC   
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include;${CMAKE_CURRENT_BINARY_DIR}/include;${PUBLIC_INCLUDE_DIRS};${INCLUDE_DIRS}>"  
+  "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR};${PUBLIC_INCLUDE_DIRS}>")  
+    
+TARGET_LINK_LIBRARIES(rtabmap_core   
+  PUBLIC   
+    rtabmap_utilite   
+    ${PUBLIC_LIBRARIES}  
+  PRIVATE   
+    ${LIBRARIES})  
+  
+# Define and link libusb_imported if Freenect is found  
+IF(Freenect_FOUND) [2](#56-1)   
+	IF(Freenect_DASH_INCLUDES)  
+	   ADD_DEFINITIONS("-DFREENECT_DASH_INCLUDES")  
+	ENDIF(Freenect_DASH_INCLUDES)  
+	SET(INCLUDE_DIRS  
+		${INCLUDE_DIRS}  
+		${Freenect_INCLUDE_DIRS}  
+	)  
+	SET(LIBRARIES  
+		${LIBRARIES}  
+		${Freenect_LIBRARIES}  
+	) [3](#56-2)   
+    # Define libusb as an IMPORTED static library    
+    add_library(libusb_imported STATIC IMPORTED)    
+    set_target_properties(libusb_imported PROPERTIES    
+        IMPORTED_LOCATION "C:/Program Files/libfreenect/lib/libusb-1.0.lib"    
+        INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/libfreenect/include"    
+    )    
+    
+    # Link libusb_imported to rtabmap_core    
+    target_link_libraries(rtabmap_core PRIVATE libusb_imported)    
+ENDIF(Freenect_FOUND)  
+    
+SET_TARGET_PROPERTIES(  
+     rtabmap_core  
+   PROPERTIES  
+     VERSION ${RTABMAP_VERSION}  
+     SOVERSION ${RTABMAP_MAJOR_VERSION}.${RTABMAP_MINOR_VERSION}  
+     EXPORT_NAME "core"  
+)  
+  
+INSTALL(TARGETS rtabmap_core EXPORT rtabmap_coreTargets  
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT runtime  
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT devel  
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT devel)  
+          
+configure_file(  
+  ${CMAKE_CURRENT_BINARY_DIR}/rtabmap_core_export.h  
+  ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_PREFIX}/core/rtabmap_core_export.h  
+  COPYONLY)  
+    
+install(  
+  DIRECTORY  
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include/${PROJECT_PREFIX}  
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_PREFIX}  
+  DESTINATION  
+    ${INSTALL_INCLUDE_DIR}  
+  COMPONENT  
+    devel  
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"  
+)  
+  
+export(EXPORT rtabmap_coreTargets  
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/../../${PROJECT_NAME}_coreTargets.cmake"  
+  NAMESPACE rtabmap::  
+)  
+  
+install(EXPORT rtabmap_coreTargets  
+  FILE  
+    ${PROJECT_NAME}_coreTargets.cmake  
+  DESTINATION  
+    ${INSTALL_CMAKE_CMAKE_DIR}  
+  NAMESPACE rtabmap::  
+  COMPONENT  
+    devel  
 )
