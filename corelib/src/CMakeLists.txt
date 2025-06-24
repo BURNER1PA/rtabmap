@@ -508,19 +508,21 @@ IF(opengv_FOUND)
     )  
 ENDIF(opengv_FOUND)  
   
-IF(PDAL_FOUND)  
-	SET(INCLUDE_DIRS  
-		${INCLUDE_DIRS}  
-		${PDAL_INCLUDE_DIRS}  
-	)  
-	SET(LIBRARIES  
-		${LIBRARIES}  
-		${PDAL_LIBRARIES}  
-	)  
-	SET(SRC_FILES  
-		${SRC_FILES}  
-		PDALWriter.cpp  
-	)  
-	IF(PDAL_VERSION VERSION_LESS "1.7")  
-	    add_definitions("-DRTABMAP_PDAL_16")  
-	ENDIF(PDAL_VERSION VERSION_LESS " 
+IF(PDAL_FOUND)
+    SET(INCLUDE_DIRS
+        ${INCLUDE_DIRS}
+        ${PDAL_INCLUDE_DIRS}
+    )
+    SET(LIBRARIES
+        ${LIBRARIES}
+        ${PDAL_LIBRARIES}
+    )
+    SET(SRC_FILES
+        ${SRC_FILES}
+        PDALWriter.cpp
+    )
+    IF(PDAL_VERSION VERSION_LESS "1.7")
+        add_definitions("-DRTABMAP_PDAL_16")
+    ENDIF()
+ENDIF()
+ 
