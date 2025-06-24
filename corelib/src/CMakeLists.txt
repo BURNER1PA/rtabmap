@@ -250,18 +250,28 @@ ENDIF(WITH_PYTHON AND Python3_FOUND)
 
 
 
-IF(Freenect_FOUND)
-	IF(Freenect_DASH_INCLUDES)
-	   ADD_DEFINITIONS("-DFREENECT_DASH_INCLUDES")
-	ENDIF(Freenect_DASH_INCLUDES)
-	SET(INCLUDE_DIRS
-		${INCLUDE_DIRS}
-		${Freenect_INCLUDE_DIRS}
-	)
-	SET(LIBRARIES
-		${LIBRARIES}
-		${Freenect_LIBRARIES}
-	)
+IF(Freenect_FOUND)  
+	IF(Freenect_DASH_INCLUDES)  
+	   ADD_DEFINITIONS("-DFREENECT_DASH_INCLUDES")  
+	ENDIF(Freenect_DASH_INCLUDES)  
+	SET(INCLUDE_DIRS  
+		${INCLUDE_DIRS}  
+		${Freenect_INCLUDE_DIRS}  
+	)  
+	SET(LIBRARIES  
+		${LIBRARIES}  
+		${Freenect_LIBRARIES} # This should now only contain freenect.lib and freenect_sync.lib  
+	)  
+  
+    # Define libusb as an IMPORTED static library  
+    add_library(libusb_imported STATIC IMPORTED)  
+    set_target_properties(libusb_imported PROPERTIES  
+        IMPORTED_LOCATION "C:/Program Files/libfreenect/lib/libusb-1.0.lib"  
+        INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/libfreenect/include"  
+    )  
+  
+    # Link libusb_imported to rtabmap_core  
+    target_link_libraries(rtabmap_core PRIVATE libusb_imported)  
 ENDIF(Freenect_FOUND)
 
 IF(OpenNI2_FOUND)
