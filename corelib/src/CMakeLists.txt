@@ -836,6 +836,10 @@ add_definitions(${PCL_DEFINITIONS})
 ADD_LIBRARY(rtabmap_core ${SRC_FILES} ${RESOURCES_HEADERS}) 
 ADD_LIBRARY(rtabmap::core ALIAS rtabmap_core)
 
+# Define LIBUSB paths manually or detect them automatically
+set(LIBUSB_LIBRARY_PATH "C:/Program Files/libfreenect/lib/libusb-1.0.lib")
+set(LIBUSB_INCLUDE_DIRS "C:/Program Files/libfreenect/include")
+
 # Define libusb as an IMPORTED static library    
     add_library(libusb_imported STATIC IMPORTED)    
     set_target_properties(libusb_imported PROPERTIES    
