@@ -155,7 +155,32 @@ install:
 before_build:  
   - cd c:\projects\rtabmap\build  
   - cmake -G "Visual Studio 14 2015 Win64" -DOpenCV_DIR="C:\Program Files\opencv\build" -DPCL_DIR="C:\Program Files\PCL\cmake" -DCPUTSDF_DIR="C:\Program Files\cpu_tsdf\share\cpu_tsdf" -Dyaml-cpp_DIR="C:\Program Files\yaml-cpp\CMake" -DFreenect_LIBRARIES="C:\Program Files\libfreenect\lib\freenect.lib;C:\Program Files\libfreenect\lib\libusb-1.0.lib" -DFreenect_INCLUDE_DIRS="C:\Program Files\libfreenect\include" -DCMAKE_EXE_LINKER_FLAGS="/LTCG" -DCMAKE_SHARED_LINKER_FLAGS="/LTCG" -DBUILD_AS_BUNDLE=ON -DWITH_FREENECT2=OFF ..  
-  
+  # Add this section to modify the generated Visual Studio project file  
+  - ps: |  
+      $vcxprojPath = "c:\projects\rtabmap\build\corelib\src\rtabmap_core.vcxproj"  
+      Write-Host "Modifying $vcxprojPath to force libusb linking..."  
+      $xml = [xml](Get-Content $vcxprojPath)  
+      $itemDefinitionGroup = $xml.Project.ItemDefinitionGroup.get_Item("Link")  
+        
+      # Add libusb-1.0.lib to AdditionalDependencies  
+      $additionalDependencies = $itemDefinitionGroup.AdditionalDependencies  
+      if ($additionalDependencies -eq $null) {  
+          $additionalDependencies = $xml.CreateElement("AdditionalDependencies")  
+          $itemDefinitionGroup.AppendChild($additionalDependencies)  
+      }  
+      $additionalDependencies.InnerText = "libusb-1.0.lib;" + $additionalDependencies.InnerText  
+        
+      # Add libfreenect/lib to AdditionalLibraryDirectories  
+      $additionalLibraryDirectories = $itemDefinitionGroup.AdditionalLibraryDirectories  
+      if ($additionalLibraryDirectories -eq $null) {  
+          $additionalLibraryDirectories = $xml.CreateElement("AdditionalLibraryDirectories")  
+          $itemDefinitionGroup.AppendChild($additionalLibraryDirectories)  
+      }  
+      $additionalLibraryDirectories.InnerText = "C:\Program Files\libfreenect\lib;" + $additionalLibraryDirectories.InnerText  
+        
+      $xml.Save($vcxprojPath)  
+      Write-Host "Finished modifying $vcxprojPath."
+      
 after_build:  
   - cmake --build . --config Release --target package  
   
