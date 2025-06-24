@@ -769,7 +769,7 @@ IF(GTSAM_FOUND)
 		optimizer/gtsam/GravityFactor.cpp
 	)
 	IF(WIN32)
-		# GTSAM should be built in STATIC on Windows to avoid "error C2338: THIS_METHOD_IS_ONLY_FOR_1x1_EXPRESSIONS" when building GTSAM
+		## GTSAM should be built in STATIC on Windows to avoid "error C2338: THIS_METHOD_IS_ONLY_FOR_1x1_EXPRESSIONS" when building GTSAM
 		add_definitions("-DGTSAM_IMPORT_STATIC") 
 	ENDIF(WIN32)
 	SET(LIBRARIES
@@ -833,8 +833,8 @@ add_definitions(${PCL_DEFINITIONS})
 
 # Add binary that is built from the source file "main.cpp".  
 # The extension is automatically found.  
-ADD_LIBRARY(rtabmap_core ${SRC_FILES} ${RESOURCES_HEADERS}) [1](#56-0)   
-ADD_LIBRARY(rtabmap::core ALIAS rtabmap_core) [1](#56-0)
+ADD_LIBRARY(rtabmap_core ${SRC_FILES} ${RESOURCES_HEADERS}) 
+ADD_LIBRARY(rtabmap::core ALIAS rtabmap_core)
 
 # Define libusb as an IMPORTED static library    
     add_library(libusb_imported STATIC IMPORTED)    
@@ -861,7 +861,7 @@ TARGET_LINK_LIBRARIES(rtabmap_core
     ${LIBRARIES})  
   
 # Define and link libusb_imported if Freenect is found  
-IF(Freenect_FOUND) [2](#56-1)   
+IF(Freenect_FOUND)   
 	IF(Freenect_DASH_INCLUDES)  
 	   ADD_DEFINITIONS("-DFREENECT_DASH_INCLUDES")  
 	ENDIF(Freenect_DASH_INCLUDES)  
