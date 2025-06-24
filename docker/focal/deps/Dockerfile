@@ -82,34 +82,6 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then echo "Installing k4a..." && \
     rm /tmp/libk4a* /tmp/k4a* && \
     apt-get clean && rm -rf /var/lib/apt/lists/; fi
 
-# libfreenect2 
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then echo "Installing libfreenect2..." && \
-    apt-get update && apt-get install -y mesa-utils xserver-xorg-video-all libusb-1.0-0-dev libturbojpeg0-dev libglfw3-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/ && \
-    git clone https://github.com/OpenKinect/libfreenect2 && \
-    cd libfreenect2 && \
-    mkdir build && \
-    cd build && \
-    cmake .. && \
-    make -j4 && \
-    make install && \
-    cd && \
-    rm -r libfreenect2; fi
-
-# zed open capture
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then echo "Installing zed-open-capture..." && \
-    apt-get update && apt install libusb-1.0-0-dev libhidapi-libusb0 libhidapi-dev wget && \
-    apt-get clean && rm -rf /var/lib/apt/lists/ && \
-    git clone https://github.com/stereolabs/zed-open-capture.git && \
-    cd zed-open-capture && \
-    mkdir build && \
-    cd build && \
-    cmake .. && \
-    make -j4 && \
-    make install && \
-    cd && \
-    rm -r zed-open-capture; fi
-
 # AliceVision v2.4.0 modified (Sept 13 2021)
 RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then echo "Installing AliceVision..." && \
       apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
